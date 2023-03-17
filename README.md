@@ -2,8 +2,7 @@
 
 ## SSB RPC Client
 
-### Examples
+### Get all messages
 ```shell
-ssb-rpc-client log --limit 100 --keys \
- | jq -c '{timestamp,ts:.value.timestamp,d:(.timestamp - .value.timestamp),type:.value.content.type,key,author:.value.author}'
+./get_all_messages.sh SERVER_IP
 ```
