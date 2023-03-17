@@ -22,16 +22,44 @@ import (
 	"log"
 	"time"
 
-	"go.cryptoscope.co/muxrpc/v2"
-	"go.cryptoscope.co/ssb/message"
-	"go.cryptoscope.co/ssb/plugins/legacyinvites"
-	refs "go.mindeco.de/ssb-refs"
+	"github.com/ssbc/go-muxrpc/v2"
+	"github.com/ssbc/go-ssb-refs"
+	"github.com/ssbc/go-ssb/message"
+	"github.com/ssbc/go-ssb/plugins/legacyinvites"
 )
 
 const methodPublish = "publish"
 const methodWhoAmI = "whoami"
 const methodCreateLogStream = "createLogStream"
+
+// createLogStream
+// log
+// [--live]
+// [--gt index]
+// [--gte index]
+// [--lt index]
+// [--lte index]
+// [--reverse]
+// [--keys]
+// [--values]
+// [--limit n]
+
 const methodCreateUserStream = "createUserStream"
+
+// createUserStream
+//
+//	--id {feedid}
+//	[--live]
+//	[--gt index]
+//	[--gte index]
+//	[--lt index]
+//	[--lte index]
+//	[--reverse]
+//	[--keys]
+//	[--values]
+//	[--limit n]
+const methodCreateHistoryStream = "createHistoryStream"
+
 const methodInvite = "invite"
 const methodCreate = "create"
 const methodAccept = "accept"
@@ -105,21 +133,50 @@ func (c *Client) ReceiveLast(id, contentType string, limit int64) ([]byte, error
 		}
 	}
 	if contentType != "" {
-		return nil, fmt.Errorf("no data of type %s in the stream for ref: %s", contentType, feedRef.Ref())
+		return nil, fmt.Errorf("no data of type %s in the stream for ref: %s", contentType, feedRef.String())
 	}
-	return nil, fmt.Errorf("no data in the stream for ref: %s", feedRef.Ref())
+	return nil, fmt.Errorf("no data in the stream for ref: %s", feedRef.String())
 }
 
-func (c *Client) LogStream() (chan []byte, error) {
+func (c *Client) LogStream(seq, limit, lt, gt int64, live, reverse, keys, values, private bool) (chan []byte, error) {
 	return c.callSSB(methodCreateLogStream, message.CreateLogArgs{
 		CommonArgs: message.CommonArgs{
-			Live: true,
+			Keys:    keys,
+			Values:  values,
+			Private: private,
+			Live:    live,
 		},
 		StreamArgs: message.StreamArgs{
-			Limit:   -1,
-			Reverse: false,
+			Limit:   limit,
+			Reverse: reverse,
+			Lt:      message.RoundedInteger(lt),
+			Gt:      message.RoundedInteger(gt),
 		},
-	}, true)
+		Seq: seq,
+	}, live)
+}
+
+func (c *Client) HistStream(id string, seq, limit, lt, gt int64, live, reverse, keys, values, private bool) (chan []byte, error) {
+	feedRef, err := refs.ParseFeedRef(id)
+	if err != nil {
+		return nil, err
+	}
+	return c.callSSB(methodCreateHistoryStream, message.CreateHistArgs{
+		CommonArgs: message.CommonArgs{
+			Keys:    keys,
+			Values:  values,
+			Private: private,
+			Live:    live,
+		},
+		StreamArgs: message.StreamArgs{
+			Limit:   limit,
+			Reverse: reverse,
+			Lt:      message.RoundedInteger(lt),
+			Gt:      message.RoundedInteger(gt),
+		},
+		ID:  feedRef,
+		Seq: seq,
+	}, live)
 }
 
 func (c *Client) callSSB(method string, arg interface{}, live bool) (chan []byte, error) {

@@ -19,11 +19,11 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ssbc/go-muxrpc/v2"
+	"github.com/ssbc/go-ssb/message"
+	"github.com/ssbc/go-ssb/plugins/legacyinvites"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.cryptoscope.co/muxrpc/v2"
-	"go.cryptoscope.co/ssb/message"
-	"go.cryptoscope.co/ssb/plugins/legacyinvites"
 )
 
 func TestClient_WhoAmI(t *testing.T) {

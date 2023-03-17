@@ -21,8 +21,8 @@ import (
 	"net"
 	"os"
 
-	"go.cryptoscope.co/ssb"
-	"go.cryptoscope.co/ssb/client"
+	"github.com/ssbc/go-ssb"
+	"github.com/ssbc/go-ssb/client"
 	"go.mindeco.de/log"
 	"go.mindeco.de/log/level"
 	"go.mindeco.de/log/term"

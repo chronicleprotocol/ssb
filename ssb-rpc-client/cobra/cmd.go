@@ -19,10 +19,10 @@ import (
 	"net"
 
 	"github.com/spf13/cobra"
-	"go.cryptoscope.co/netwrap"
-	"go.cryptoscope.co/secretstream"
-	ssbServer "go.cryptoscope.co/ssb"
-	"go.cryptoscope.co/ssb/invite"
+	"github.com/ssbc/go-netwrap"
+	"github.com/ssbc/go-secretstream"
+	ssbServer "github.com/ssbc/go-ssb"
+	"github.com/ssbc/go-ssb/invite"
 
 	"github.com/chronicleprotocol/ssb/ssb-rpc-client/config"
 

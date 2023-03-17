@@ -21,11 +21,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Log(opts *Options) *cobra.Command {
+// Hist returns a cobra command that prints the history of a feed.
+func Hist(opts *Options) *cobra.Command {
+	var id string
 	var seq, limit, lt, gt int64
 	var live, reverse, keys, values, private bool
 	cmd := &cobra.Command{
-		Use: "log",
+		Use: "hist --id {feedId} [--seq n] [--live]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conf, err := opts.SSBConfig()
 			if err != nil {
@@ -35,7 +37,7 @@ func Log(opts *Options) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			ch, err := c.LogStream(seq, limit, lt, gt, live, reverse, keys, values, private)
+			ch, err := c.HistStream(id, seq, limit, lt, gt, live, reverse, keys, values, private)
 			if err != nil {
 				return err
 			}
@@ -62,6 +64,12 @@ func Log(opts *Options) *cobra.Command {
 		"private",
 		false,
 		"",
+	)
+	cmd.Flags().StringVar(
+		&id,
+		"id",
+		"",
+		"feed id",
 	)
 	cmd.Flags().BoolVar(
 		&live,

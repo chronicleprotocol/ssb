@@ -24,7 +24,7 @@ import (
 	"os"
 	"strconv"
 
-	"go.cryptoscope.co/ssb/invite"
+	"github.com/ssbc/go-ssb/invite"
 )
 
 type Caps struct {
