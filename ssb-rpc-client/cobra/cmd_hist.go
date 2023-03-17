@@ -26,7 +26,7 @@ func Hist(opts *Options) *cobra.Command {
 	var seq, limit, lt, gt int64
 	var live, reverse, keys, values, private, json bool
 	cmd := &cobra.Command{
-		Use:  "hist FEED_ID [--limit n] [--seq n] [--live] [--keys] [--values] [--private]",
+		Use:  "hist FEED_ID [--limit n] [--seq n] [--live] [--keys]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conf, err := opts.SSBConfig()

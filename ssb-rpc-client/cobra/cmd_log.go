@@ -25,7 +25,7 @@ func Log(opts *Options) *cobra.Command {
 	var seq, limit, lt, gt int64
 	var live, reverse, keys, values, private bool
 	cmd := &cobra.Command{
-		Use: "log [--live] [--gte ts] [--lte ts] [--reverse] [--keys] [--values] [--limit n]",
+		Use: "log [--live] [--gte ts] [--lte ts] [--reverse] [--keys] [--limit n]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conf, err := opts.SSBConfig()
 			if err != nil {
