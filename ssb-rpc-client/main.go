@@ -36,15 +36,15 @@ func main() {
 		&opts.ConfigPath,
 		"config",
 		"c",
-		"./local.config.json",
+		"./config.json",
 		"config file path (will also work with caps.json: {shs,sign}",
 	)
 	cmd.PersistentFlags().StringVarP(
-		&opts.KeysPath,
-		"keys",
-		"k",
-		"./local.secret.json",
-		"keys file path",
+		&opts.SecretPath,
+		"secret",
+		"s",
+		"./secret.json",
+		"secret file path",
 	)
 	cmd.PersistentFlags().StringVarP(
 		&opts.SsbHost,

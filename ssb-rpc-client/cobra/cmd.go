@@ -31,14 +31,14 @@ import (
 
 type Options struct {
 	ConfigPath string
-	KeysPath   string
+	SecretPath string
 	SsbHost    string
 	SsbPort    int
 	Verbose    bool
 }
 
 func (opts *Options) SSBConfig() (*client.Config, error) {
-	keys, err := ssbServer.LoadKeyPair(opts.KeysPath)
+	keys, err := ssbServer.LoadKeyPair(opts.SecretPath)
 	if err != nil {
 		return nil, err
 	}

@@ -83,15 +83,15 @@ func Log(opts *Options) *cobra.Command {
 	)
 	cmd.Flags().Int64Var(
 		&lt,
-		"lte",
+		"lt",
 		0,
-		"Timestamp is less than or equal. When `--reverse` the order will be reversed, but the records streamed will be the same.",
+		"Timestamp is less than. When `--reverse` the order will be reversed, but the records streamed will be the same.",
 	)
 	cmd.Flags().Int64Var(
 		&gt,
-		"gte",
+		"gt",
 		0,
-		"Timestamp is greater than or equal. When `--reverse` the order will be reversed, but the records streamed will be the same.",
+		"Timestamp is greater than. When `--reverse` the order will be reversed, but the records streamed will be the same.",
 	)
 	cmd.Flags().Int64Var(
 		&limit,
