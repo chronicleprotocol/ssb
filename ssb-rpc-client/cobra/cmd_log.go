@@ -25,7 +25,7 @@ func Log(opts *Options) *cobra.Command {
 	var seq, limit, lt, gt int64
 	var live, reverse, keys, values, private bool
 	cmd := &cobra.Command{
-		Use: "log",
+		Use: "log [--live] [--gte ts] [--lte ts] [--reverse] [--keys] [--values] [--limit n]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conf, err := opts.SSBConfig()
 			if err != nil {
@@ -49,31 +49,31 @@ func Log(opts *Options) *cobra.Command {
 		&keys,
 		"keys",
 		false,
-		"",
+		"Returns a different format than the default.",
 	)
 	cmd.Flags().BoolVar(
 		&values,
 		"values",
 		false,
-		"",
+		"Does not seem to do anything.",
 	)
 	cmd.Flags().BoolVar(
 		&private,
 		"private",
 		false,
-		"",
+		"Does not seem to do anything.",
 	)
 	cmd.Flags().BoolVar(
 		&live,
 		"live",
 		false,
-		"live stream",
+		"Keep the stream open and emit new messages as they are received.",
 	)
 	cmd.Flags().BoolVar(
 		&reverse,
 		"reverse",
 		false,
-		"reverse stream",
+		"Reverse stream output. Beware that due to the way LevelDB works, a reverse seek will be slower than a forward seek.",
 	)
 	cmd.Flags().Int64Var(
 		&seq,
@@ -83,21 +83,21 @@ func Log(opts *Options) *cobra.Command {
 	)
 	cmd.Flags().Int64Var(
 		&lt,
-		"lt",
+		"lte",
 		0,
-		"less than",
+		"Timestamp is less than or equal. When `--reverse` the order will be reversed, but the records streamed will be the same.",
 	)
 	cmd.Flags().Int64Var(
 		&gt,
-		"gt",
+		"gte",
 		0,
-		"greater than",
+		"Timestamp is greater than or equal. When `--reverse` the order will be reversed, but the records streamed will be the same.",
 	)
 	cmd.Flags().Int64Var(
 		&limit,
 		"limit",
 		-1,
-		"max message count",
+		"This number represents a maximum number of results and may not be reached if you get to the end of the data first. A value of -1 means there is no limit. When `--reverse` the highest keys will be returned instead of the lowest keys.",
 	)
 	return cmd
 }

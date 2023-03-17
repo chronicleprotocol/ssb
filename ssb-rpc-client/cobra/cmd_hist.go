@@ -23,11 +23,11 @@ import (
 
 // Hist returns a cobra command that prints the history of a feed.
 func Hist(opts *Options) *cobra.Command {
-	var id string
 	var seq, limit, lt, gt int64
-	var live, reverse, keys, values, private bool
+	var live, reverse, keys, values, private, json bool
 	cmd := &cobra.Command{
-		Use: "hist --id {feedId} [--seq n] [--live]",
+		Use:  "hist FEED_ID [--limit n] [--seq n] [--live] [--keys] [--values] [--private]",
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conf, err := opts.SSBConfig()
 			if err != nil {
@@ -37,7 +37,7 @@ func Hist(opts *Options) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			ch, err := c.HistStream(id, seq, limit, lt, gt, live, reverse, keys, values, private)
+			ch, err := c.HistStream(args[0], seq, limit, lt, gt, live, reverse, keys, values, private, json)
 			if err != nil {
 				return err
 			}
@@ -65,41 +65,17 @@ func Hist(opts *Options) *cobra.Command {
 		false,
 		"",
 	)
-	cmd.Flags().StringVar(
-		&id,
-		"id",
-		"",
-		"feed id",
-	)
 	cmd.Flags().BoolVar(
 		&live,
 		"live",
 		false,
-		"live stream",
-	)
-	cmd.Flags().BoolVar(
-		&reverse,
-		"reverse",
-		false,
-		"reverse stream",
+		"Keep the stream open and emit new messages as they are received.",
 	)
 	cmd.Flags().Int64Var(
 		&seq,
 		"seq",
 		0,
-		"sequence number",
-	)
-	cmd.Flags().Int64Var(
-		&lt,
-		"lt",
-		0,
-		"less than",
-	)
-	cmd.Flags().Int64Var(
-		&gt,
-		"gt",
-		0,
-		"greater than",
+		"(default: 0): If seq > 0, then only stream messages with sequence numbers greater than or equal to `seq`.",
 	)
 	cmd.Flags().Int64Var(
 		&limit,

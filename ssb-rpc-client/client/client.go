@@ -156,7 +156,7 @@ func (c *Client) LogStream(seq, limit, lt, gt int64, live, reverse, keys, values
 	}, live)
 }
 
-func (c *Client) HistStream(id string, seq, limit, lt, gt int64, live, reverse, keys, values, private bool) (chan []byte, error) {
+func (c *Client) HistStream(id string, seq, limit, lt, gt int64, live, reverse, keys, values, private, json bool) (chan []byte, error) {
 	feedRef, err := refs.ParseFeedRef(id)
 	if err != nil {
 		return nil, err
@@ -174,8 +174,9 @@ func (c *Client) HistStream(id string, seq, limit, lt, gt int64, live, reverse, 
 			Lt:      message.RoundedInteger(lt),
 			Gt:      message.RoundedInteger(gt),
 		},
-		ID:  feedRef,
-		Seq: seq,
+		ID:     feedRef,
+		Seq:    seq,
+		AsJSON: json,
 	}, live)
 }
 

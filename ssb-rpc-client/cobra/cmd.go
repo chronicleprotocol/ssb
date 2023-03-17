@@ -90,8 +90,7 @@ func Root() (*Options, *cobra.Command) {
 		CompletionOptions: cobra.CompletionOptions{
 			HiddenDefaultCmd: true,
 		},
-		DisableAutoGenTag:  true,
-		DisableSuggestions: true,
-		SilenceUsage:       true,
+		DisableAutoGenTag: true,
+		SilenceUsage:      true,
 	}
 }
