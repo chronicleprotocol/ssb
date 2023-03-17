@@ -51,19 +51,19 @@ func Hist(opts *Options) *cobra.Command {
 		&keys,
 		"keys",
 		false,
-		"",
+		"Returns a different format than the default.",
 	)
 	cmd.Flags().BoolVar(
 		&values,
 		"values",
 		false,
-		"",
+		"DOES NOT SEEM TO BE DOING ANYTHING IN THIS COMMAND.",
 	)
 	cmd.Flags().BoolVar(
 		&private,
 		"private",
 		false,
-		"",
+		"DOES NOT SEEM TO BE DOING ANYTHING IN THIS COMMAND.",
 	)
 	cmd.Flags().BoolVar(
 		&live,
@@ -81,7 +81,7 @@ func Hist(opts *Options) *cobra.Command {
 		&limit,
 		"limit",
 		-1,
-		"max message count",
+		"This number represents a maximum number of results and may not be reached if you get to the end of the data first. A value of -1 means there is no limit. When `--reverse` the highest keys will be returned instead of the lowest keys.",
 	)
 	return cmd
 }

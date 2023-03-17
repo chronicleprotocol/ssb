@@ -55,13 +55,13 @@ func Log(opts *Options) *cobra.Command {
 		&values,
 		"values",
 		false,
-		"Does not seem to do anything.",
+		"DOES NOT SEEM TO BE DOING ANYTHING IN THIS COMMAND.",
 	)
 	cmd.Flags().BoolVar(
 		&private,
 		"private",
 		false,
-		"Does not seem to do anything.",
+		"DOES NOT SEEM TO BE DOING ANYTHING IN THIS COMMAND.",
 	)
 	cmd.Flags().BoolVar(
 		&live,
@@ -79,7 +79,7 @@ func Log(opts *Options) *cobra.Command {
 		&seq,
 		"seq",
 		0,
-		"sequence number",
+		"DOES NOT SEEM TO BE DOING ANYTHING IN THIS COMMAND.",
 	)
 	cmd.Flags().Int64Var(
 		&lt,
