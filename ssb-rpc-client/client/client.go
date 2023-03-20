@@ -30,10 +30,8 @@ import (
 
 const methodPublish = "publish"
 const methodWhoAmI = "whoami"
-const methodCreateLogStream = "createLogStream"
 
 // createLogStream
-// log
 // [--live]
 // [--gt index]
 // [--gte index]
@@ -43,21 +41,22 @@ const methodCreateLogStream = "createLogStream"
 // [--keys]
 // [--values]
 // [--limit n]
+const methodCreateLogStream = "createLogStream"
 
+// createUserStream --id {feedid}
+// [--live]
+// [--gt index]
+// [--gte index]
+// [--lt index]
+// [--lte index]
+// [--reverse]
+// [--keys]
+// [--values]
+// [--limit n]
 const methodCreateUserStream = "createUserStream"
 
-// createUserStream
-//
-//	--id {feedid}
-//	[--live]
-//	[--gt index]
-//	[--gte index]
-//	[--lt index]
-//	[--lte index]
-//	[--reverse]
-//	[--keys]
-//	[--values]
-//	[--limit n]
+// hist {feedid} [seq] [live]
+// hist --id {feedid} [--seq n] [--live]
 const methodCreateHistoryStream = "createHistoryStream"
 
 const methodInvite = "invite"
@@ -155,8 +154,29 @@ func (c *Client) LogStream(seq, limit, lt, gt int64, live, reverse, keys, values
 		Seq: seq,
 	}, live)
 }
+func (c *Client) UserStream(id string, limit, lt, gt int64, live, reverse, keys, values, private bool) (chan []byte, error) {
+	feedRef, err := refs.ParseFeedRef(id)
+	if err != nil {
+		return nil, err
+	}
+	return c.callSSB(methodCreateUserStream, message.CreateHistArgs{
+		CommonArgs: message.CommonArgs{
+			Keys:    keys,
+			Values:  values,
+			Private: private,
+			Live:    live,
+		},
+		StreamArgs: message.StreamArgs{
+			Limit:   limit,
+			Reverse: reverse,
+			Lt:      message.RoundedInteger(lt),
+			Gt:      message.RoundedInteger(gt),
+		},
+		ID: feedRef,
+	}, live)
+}
 
-func (c *Client) HistStream(id string, seq, limit, lt, gt int64, live, reverse, keys, values, private, json bool) (chan []byte, error) {
+func (c *Client) HistStream(id string, seq, limit int64, live, reverse, keys, values, private bool) (chan []byte, error) {
 	feedRef, err := refs.ParseFeedRef(id)
 	if err != nil {
 		return nil, err
@@ -171,12 +191,9 @@ func (c *Client) HistStream(id string, seq, limit, lt, gt int64, live, reverse, 
 		StreamArgs: message.StreamArgs{
 			Limit:   limit,
 			Reverse: reverse,
-			Lt:      message.RoundedInteger(lt),
-			Gt:      message.RoundedInteger(gt),
 		},
-		ID:     feedRef,
-		Seq:    seq,
-		AsJSON: json,
+		ID:  feedRef,
+		Seq: seq,
 	}, live)
 }
 

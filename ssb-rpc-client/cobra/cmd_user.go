@@ -21,12 +21,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Hist returns a cobra command that prints the history of a feed.
-func Hist(opts *Options) *cobra.Command {
-	var seq, limit int64
+// User returns a cobra command that prints the history of a feed.
+func User(opts *Options) *cobra.Command {
+	var limit, lt, gt int64
 	var live, reverse, keys, values, private bool
 	cmd := &cobra.Command{
-		Use:  "hist FEED_ID [--limit n] [--seq n] [--live] [--keys]",
+		Use:  "user FEED_ID [--live] [--gte ts] [--lte ts] [--reverse] [--keys] [--limit n]",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			conf, err := opts.SSBConfig()
@@ -37,7 +37,7 @@ func Hist(opts *Options) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			ch, err := c.HistStream(args[0], seq, limit, live, reverse, keys, values, private)
+			ch, err := c.UserStream(args[0], limit, lt, gt, live, reverse, keys, values, private)
 			if err != nil {
 				return err
 			}
@@ -71,11 +71,23 @@ func Hist(opts *Options) *cobra.Command {
 		false,
 		"Keep the stream open and emit new messages as they are received.",
 	)
+	cmd.Flags().BoolVar(
+		&reverse,
+		"reverse",
+		false,
+		"Reverse stream output. Beware that due to the way LevelDB works, a reverse seek will be slower than a forward seek.",
+	)
 	cmd.Flags().Int64Var(
-		&seq,
-		"seq",
+		&lt,
+		"lt",
 		0,
-		"(default: 0): If seq > 0, then only stream messages with sequence numbers greater than or equal to `seq`.",
+		"Timestamp is less than. When `--reverse` the order will be reversed, but the records streamed will be the same.",
+	)
+	cmd.Flags().Int64Var(
+		&gt,
+		"gt",
+		0,
+		"Timestamp is greater than. When `--reverse` the order will be reversed, but the records streamed will be the same.",
 	)
 	cmd.Flags().Int64Var(
 		&limit,

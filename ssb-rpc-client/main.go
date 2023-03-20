@@ -65,6 +65,7 @@ func main() {
 		cobra.Pull(opts),
 		cobra.Log(opts),
 		cobra.Hist(opts),
+		cobra.User(opts),
 		cobra.Whoami(opts),
 		cobra.InviteCreate(opts),
 		cobra.InviteAccept(opts),
