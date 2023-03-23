@@ -2,33 +2,47 @@ package main
 
 import (
 	"bufio"
-	"bytes"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 )
 
 func main() {
-	name := os.Args[1]
+	log.Println(os.Args[1:])
+
+	var scale int64
+	flag.Int64Var(&scale, "s", 100, "scale of progress")
+	flag.Parse()
+
+	name := flag.Arg(0)
 	info, err := os.Stat(name)
 	if err != nil {
 		log.Panic(err)
 	}
 	size := info.Size()
 
-	f, err := os.ReadFile(name)
+	f, err := os.Open(name)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	data := bufio.NewScanner(bytes.NewReader(f))
+	data := bufio.NewScanner(f)
 	data.Split(bufio.ScanBytes)
 
 	tok := []byte(`{"key":"`)
-	tl, ti, depth, counter := len(tok), 0, 0, 0
+	tl, ti, depth := len(tok), 0, 0
 
+	scaleS := fmt.Sprintf("%d", scale)
+	scaleS = "0/" + scaleS[2:]
+	if scale == 100 {
+		scaleS = "%"
+	} else if scale == 1000 {
+		scaleS = "‰"
+	}
 	inJSON := false
-	var bytesRead, progress, p int64
+	var counter, bytesRead, progress, p int64
+
 	for data.Scan() {
 		bytesRead++
 		if inJSON {
@@ -43,9 +57,9 @@ func main() {
 					fmt.Println()
 
 					counter++
-					if p = bytesRead * 100 / size; p != progress {
+					if p = bytesRead * scale / size; p != progress {
 						progress = p
-						log.Println(name, "-", bytesRead, "bytes", progress, "% of", size, "objects:", counter)
+						log.Println(name, "-", bytesRead, "bytes", progress, scaleS, "of", size, "objects:", counter)
 					}
 				}
 			}
